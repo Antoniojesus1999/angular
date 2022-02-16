@@ -9,11 +9,15 @@ import { ClienteComponent } from './cliente/cliente.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ClienteService } from './cliente/cliente.service'
 import { RouterModule, Routes} from '@angular/router';
+import { FormComponent } from './cliente/form.component';
+import { FormsModule } from '@angular/forms';
 
 const routes :Routes =[
   { path:'', redirectTo:'/clientes', pathMatch: 'full' },
   { path:'directiva', component:DirectivaComponent},
-  { path: 'clientes', component:ClienteComponent}
+  { path: 'clientes', component:ClienteComponent},
+  { path: 'clientes/form', component:FormComponent},
+  { path: 'clientes/form/:id', component: FormComponent}
 ];
 
 @NgModule({
@@ -22,11 +26,13 @@ const routes :Routes =[
     HeaderComponent,
     FooterComponent,
     DirectivaComponent,
-    ClienteComponent
+    ClienteComponent,
+    FormComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
   providers: [
