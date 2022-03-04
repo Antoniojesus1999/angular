@@ -13,6 +13,7 @@ import { FormComponent } from './cliente/form.component';
 import { FormsModule } from '@angular/forms';
 import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -32,7 +33,8 @@ const routes :Routes =[
     FooterComponent,
     DirectivaComponent,
     ClienteComponent,
-    FormComponent
+    FormComponent,
+    PaginatorComponent
   ],
   imports: [
     BrowserModule,

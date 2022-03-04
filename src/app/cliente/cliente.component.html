@@ -8,7 +8,7 @@
     <div class="alert alert-info" *ngIf="clientes?.length == 0">
         No existen registros
     </div>
-    <table class="table table-bordered table-striped" *ngIf="clientes?.length>0" >
+    <table class="table table-bordered table-striped" *ngIf="clientes?.length>0">
       <thead>
         <tr>
           <th>Id</th> <th>Nombre</th> <th>Apellido</th> <th>Email</th> <th>Fecha</th><th>Editar</th><th>Eliminar</th>
@@ -26,6 +26,6 @@
         </tr>
       </tbody>
     </table>
-    
+    <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
   </div>
 </div>
