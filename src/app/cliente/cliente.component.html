@@ -8,7 +8,7 @@
     <div class="alert alert-info" *ngIf="clientes?.length == 0">
         No existen registros
     </div>
-    <table class="table table-bordered table-striped" *ngIf="clientes?.length>0">
+    <table class="table table-bordered table-striped" *ngIf="clientes?.length>0" >
       <thead>
         <tr>
           <th>Id</th> <th>Nombre</th> <th>Apellido</th> <th>Email</th> <th>Fecha</th><th>Editar</th><th>Eliminar</th>
@@ -18,13 +18,14 @@
         <tr *ngFor="let cliente of clientes">
           <td>{{cliente.id}}</td>
           <td>{{cliente.nombre}}</td>
-          <td>{{cliente.apellido}}</td>
+          <td>{{cliente.apellido | uppercase }}</td>
           <td>{{cliente.email}}</td>
-          <td>{{cliente.createAt}}</td>
+          <td>{{cliente.createAt | date:"EEEE dd, MMMM yyyy"}}</td>
           <td><button type="button" name="button" [routerLink]="['/clientes/form', cliente.id]" class="btn btn-primary btn-sm"> Editar</button></td>
           <td><button type="button" name="eliminar" (click)='delete(cliente)' class="class btn btn-danger btn-sm">Eliminar</button></td>
         </tr>
       </tbody>
     </table>
+    
   </div>
 </div>
