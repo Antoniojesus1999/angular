@@ -7,8 +7,7 @@ import { ActivatedRoute  } from '@angular/router';
 
 @Component({
   selector: 'app-cliente',
-  templateUrl: './cliente.component.html',
-  styleUrls: ['./cliente.component.css']
+  templateUrl: './cliente.component.html'
 })
 export class ClienteComponent implements OnInit {
 
