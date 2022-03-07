@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class ClienteService{
   private url :string = 'http://localhost:8080/api/clientes';
   private httpHeaders = new HttpHeaders({'Content-Type':'application/json'})
-  constructor(private http :HttpClient, private rotuer :Router) { }
+  constructor(private http :HttpClient, private router :Router) { }
 
   getClientes(page: number):Observable<any>{
     return this.http.get(this.url + '/page/'+ page).pipe(
@@ -66,7 +66,7 @@ export class ClienteService{
   getCliente(id): Observable<Cliente>{
     return this.http.get<Cliente>(`${this.url}/${id}`).pipe(
       catchError(e => {
-        this.rotuer.navigate(['/clientes']);
+        this.router.navigate(['/clientes']);
         console.log(e.error.mensaje);
           swal.fire('Error al editar', e.error.mensaje, 'error');
           return throwError(e);

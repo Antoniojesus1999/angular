@@ -19,7 +19,7 @@ registerLocaleData(localeEs, 'es');
 
 const routes :Routes =[
   { path:'', redirectTo:'/clientes', pathMatch: 'full' },
-  { path:'directiva', component:DirectivaComponent},
+  { path: 'directiva', component:DirectivaComponent},
   { path: 'clientes', component:ClienteComponent},
   { path: 'clientes/form', component:FormComponent},
   { path: 'clientes/page/:page', component:ClienteComponent},
