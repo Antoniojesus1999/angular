@@ -4,6 +4,7 @@ import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import { tap } from 'rxjs/operators';
 import { ActivatedRoute, Router  } from '@angular/router';
+import { ModalService } from './detalle/modal.service';
 
 @Component({
   selector: 'app-cliente',
@@ -12,11 +13,14 @@ import { ActivatedRoute, Router  } from '@angular/router';
 export class ClienteComponent implements OnInit {
 
   constructor(private clienteService: ClienteService,
-              private activatedRoute: ActivatedRoute
+              private activatedRoute: ActivatedRoute,
+              public modalService: ModalService
   ) {
    }
+
   clientes: Cliente[];
   paginador: any;
+  clienteSeleccionado: Cliente;
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe( params =>{
     let page: number = +params.get('page') ;
@@ -70,6 +74,11 @@ swalWithBootstrapButtons.fire({
 
   }
 })
+  }
+
+  abrirModal(cliente :Cliente){
+    this.clienteSeleccionado = cliente;
+    this.modalService.abrirModal();
   }
 
 }

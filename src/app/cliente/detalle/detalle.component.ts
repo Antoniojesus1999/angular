@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpEventType } from '@angular/common/http';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Cliente } from '../cliente';
 import { ClienteService } from '../cliente.service';
+import { ModalService } from './modal.service';
 @Component({
   selector: 'detalle-cliente',
   templateUrl: './detalle.component.html',
@@ -10,26 +12,19 @@ import { ClienteService } from '../cliente.service';
 })
 export class DetalleComponent implements OnInit {
 
-  cliente: Cliente;
+  @Input() cliente: Cliente;
   titulo: string = "Detalle del cliente";
-  public fotoSeleccionada: File;
+  fotoSeleccionada: File;
+  progreso: number =0;
 
   constructor(private clienteService: ClienteService, 
-    private activatedRouter: ActivatedRoute) { }
+    public modalService: ModalService) { }
 
-  ngOnInit(): void {
-    this.activatedRouter.paramMap.subscribe(params =>{
-      let id: number= +params.get('id');
-      if(id){
-        this.clienteService.getCliente(id).subscribe(cliente =>{
-          this.cliente = cliente;
-          console.log('detalle.component -> cliente = '+this.cliente.nombre);
-        })
-      }
-    })
-  }
+  ngOnInit(): void {}
+
   seleccionarFoto(event){
       this.fotoSeleccionada = event.target.files[0];
+      this.progreso=0;
       console.log(this.fotoSeleccionada);
       if (this.fotoSeleccionada.type.indexOf('image')<0) {
         Swal.fire('Error seleccionar imagen: ', 'El archivo debe ser el tipo imagen','error')
@@ -40,11 +35,21 @@ export class DetalleComponent implements OnInit {
     if (!this.fotoSeleccionada) {
       Swal.fire('Error al subir foto ','Debe seleccionar una foto', 'error');
     } else {
-      this.clienteService.subirFoto(this.fotoSeleccionada, this.cliente.id).subscribe(cliente => {
-        this.cliente = cliente;
-        Swal.fire('La foto se ha subido comrrectamente!', `La foto se ha subido con éxito: ${this.cliente.foto}`,'success' );
+      this.clienteService.subirFoto(this.fotoSeleccionada, this.cliente.id).subscribe(event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progreso = Math.round((event.loaded/event.total)*100);
+        }else if(event.type === HttpEventType.Response){
+          let response: any = event.body;
+          this.cliente = response.cliente as Cliente;
+          Swal.fire('La foto se ha subido comrrectamente!',response.mensaje,'success' );
+        }
       })
     }
   }
 
+  cerrarModal(){
+    this.modalService.cerrarModal();
+    this.fotoSeleccionada = null;
+    this.progreso = null;
+  }
 }
