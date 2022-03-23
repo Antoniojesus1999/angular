@@ -6,7 +6,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { DirectivaComponent } from './directiva/directiva.component';
 import { ClienteComponent } from './cliente/cliente.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ClienteService } from './cliente/cliente.service'
 import { RouterModule, Routes} from '@angular/router';
 import { FormComponent } from './cliente/form.component';
@@ -21,6 +21,8 @@ import { DetalleComponent } from './cliente/detalle/detalle.component';
 import { LoginComponent } from './usuarios/login.component';
 import { AuthGuard } from './usuarios/guards/auth.guard';
 import { RoleGuard } from './usuarios/guards/role.guard';
+import { TokenInterceptor } from './usuarios/interceptors/token.interceptor';
+import { AuthInterceptor } from './usuarios/interceptors/auth.interceptor';
 
 
 
@@ -61,7 +63,10 @@ const routes :Routes =[
   ],
   providers: [
     ClienteService,
-    {provide: LOCALE_ID, useValue: 'es' }
+     {provide: LOCALE_ID, useValue: 'es'},
+     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi:true},
+     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true}
+   
   ],
   bootstrap: [AppComponent]
 })

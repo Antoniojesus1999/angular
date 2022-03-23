@@ -3,49 +3,27 @@ import { Cliente } from './cliente';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient,HttpEvent,HttpHeaders, HttpRequest} from '@angular/common/http';
 import { map, catchError, tap} from 'rxjs/operators';
-import swal from "sweetalert2";
 import { Router } from '@angular/router';
 import { Region } from './region';
-import { AuthService } from '../usuarios/auth.service';
-import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService{
   private url :string = 'http://localhost:8080/api/clientes';
-  private httpHeaders = new HttpHeaders({'Content-Type':'application/json'})
-  constructor(private http :HttpClient, private router :Router, private authService: AuthService) { }
+  constructor(private http :HttpClient, private router :Router) { }
 
-  private agregarAuthorizationHeader(){
+  //Comentado por que utilizamos HTTP_INTERCEPTOR para agregarlo automaticamente
+  /*private agregarAuthorizationHeader(){
       let token = this.authService.token;
       if(token != null){
           return this.httpHeaders.append('Authorization','Bearer ' + token );
       }
       return this.httpHeaders;
-  }
-
-  private isNoAutorizado(e): boolean{
-    if (e.status == 401) {
-      //Si esta autenticado pero back nos devuelve un 401 significa que ha expirado el token y cerramos sesión y lo enviamos al login
-      if (this.authService.isAuthenticated()) {
-        this.authService.logout();
-      }
-      this.router.navigate(['/login'])
-      return true;
-    }
-    if ( e.status == 403) {
-      Swal.fire('Acceso denegado', `Hola ${this.authService.usuario.username} no tienes acceso a este recurso!`, 'warning');
-      this.router.navigate(['/clientes'])
-      return true;
-    }
-    return false;
-  }
+  }*/
 
   getRegiones(): Observable<Region[]>{
-    return this.http.get<Region[]>(this.url+'/regiones',{headers: this.agregarAuthorizationHeader()}).pipe(
-      catchError(e => {this.isNoAutorizado(e); return throwError(()=>e)})
-    )
+    return this.http.get<Region[]>(this.url+'/regiones');
   }
 
   getClientes(page: number):Observable<any>{
@@ -83,83 +61,71 @@ export class ClienteService{
   // }
 
   create(cliente: Cliente) :Observable<Cliente>{
-    return this.http.post(this.url,cliente,{headers: this.agregarAuthorizationHeader()}).pipe(
+    return this.http.post(this.url,cliente).pipe(
       map((response :any) => response.cliente as Cliente),
       catchError(e => {
-        if (this.isNoAutorizado) {
-          return throwError(()=>e)
-        }
+        // dejamos que capture el error y no lo quitamos como los demas por que también estamos capturando los errores
+        // del formulario.
         if(e.status==400){
           return throwError(e);
         }
-        console.log(e.error.mensaje);
-          swal.fire(e.error.mensaje, e.error.error , 'error');
+        if (e.error.mensaje) {
+          console.error(e.error.mensaje)
+        }
           return throwError(e);
       })
     )
   }
 
   getCliente(id): Observable<Cliente>{
-    return this.http.get<Cliente>(`${this.url}/${id}`,{headers: this.agregarAuthorizationHeader()}).pipe(
+    return this.http.get<Cliente>(`${this.url}/${id}`).pipe(
       catchError(e => {
-        if (this.isNoAutorizado) {
-          return throwError(()=>e)
-        }
+      if (e.status = 401 && e.error.mensaje) {
         this.router.navigate(['/clientes']);
         console.log(e.error.mensaje);
-          swal.fire('Error al editar', e.error.mensaje, 'error');
+        }
           return throwError(e);
       })
     )
   }
 
   update(cliente: Cliente):Observable<any>{
-    return this.http.put<Cliente>(`${this.url}/${cliente.id}`, cliente,{headers: this.agregarAuthorizationHeader()}).pipe(
+    return this.http.put<Cliente>(`${this.url}/${cliente.id}`, cliente).pipe(
       catchError(e => {
-        if (this.isNoAutorizado) {
-          return throwError(()=>e)
-        }
         if(e.status==400){
           return throwError(e);
         }
-        console.log(e.error.mensaje);
-          swal.fire(e.error.mensaje, e.error.error , 'error');
+        if (e.error.mensaje) {
+          console.error(e.error.mensaje)
+        }
           return throwError(e);
       })
     )
   }
 
   delete(id:number): Observable<Cliente>{
-    return this.http.delete<Cliente>(`${this.url}/${id}`,{headers: this.agregarAuthorizationHeader()}).pipe(
+    return this.http.delete<Cliente>(`${this.url}/${id}`).pipe(
       catchError(e => {
-        if (this.isNoAutorizado) {
-          return throwError(()=>e)
+        if (e.error.mensaje) {
+          console.error(e.error.mensaje)
         }
-        console.log(e.error.mensaje);
-          swal.fire(e.error.mensaje, e.error.error ,'error');
           return throwError(e);
       })
     )
   }
 
   subirFoto(archivo: File, id):Observable<HttpEvent<{}>>{
+   
     let formData = new FormData();
     formData.append("archivo", archivo);
     formData.append("id",id);
     let httpHeaders = new HttpHeaders();
-    let token = this.authService.token;
-    if (token != null) {
-      httpHeaders = httpHeaders.append('Authorization', 'Bearer ' + token);
-    }
+    
     const req = new HttpRequest('POST',`${this.url}/upload`,formData , {
       reportProgress: true,
       headers: httpHeaders
     });
-    return this.http.request(req).pipe(
-      catchError(e => {this.isNoAutorizado(e);
-         return throwError(()=>e)}
-         )
-    );
+    return this.http.request(req)
   }
 
 
