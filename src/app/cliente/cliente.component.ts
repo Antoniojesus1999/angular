@@ -5,6 +5,7 @@ import { ClienteService } from './cliente.service';
 import { tap } from 'rxjs/operators';
 import { ActivatedRoute, Router  } from '@angular/router';
 import { ModalService } from './detalle/modal.service';
+import { AuthService } from '../usuarios/auth.service';
 
 @Component({
   selector: 'app-cliente',
@@ -14,7 +15,8 @@ export class ClienteComponent implements OnInit {
 
   constructor(private clienteService: ClienteService,
               private activatedRoute: ActivatedRoute,
-              public modalService: ModalService
+              public modalService: ModalService,
+              public authService: AuthService
   ) {
    }
 

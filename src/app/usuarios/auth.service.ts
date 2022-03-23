@@ -66,6 +66,7 @@ export class AuthService {
 
   guardarToken(accestoken: string): void{
     this._token = accestoken;
+    sessionStorage.setItem('token',accestoken)
   }
 
   obtenerDatosToken(accessToken: string):any{
@@ -74,4 +75,29 @@ export class AuthService {
     }
     return null;
   }
+
+  isAuthenticated(): boolean{
+    let payload = this.obtenerDatosToken(this.token);
+    if(payload != null && payload.user_name && payload.user_name && payload.user_name.length>0){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+
+  logout():void{
+    this._token = null;
+    this._usuario = null;
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('usuario');
+  }
+
+  hasRole(role: string):boolean{
+    if(this.usuario.roles.includes(role)){
+      return true;
+    }
+    return false;
+  }
+
 }
