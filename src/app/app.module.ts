@@ -24,11 +24,11 @@ import { RoleGuard } from './usuarios/guards/role.guard';
 import { TokenInterceptor } from './usuarios/interceptors/token.interceptor';
 import { AuthInterceptor } from './usuarios/interceptors/auth.interceptor';
 import { DetalleFacturaComponent } from './facturas/detalle-factura.component';
-import { FacturasComponent } from './facturas/facturas.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-
+import { CommonModule } from '@angular/common';  
+import { FacturasComponent } from './facturas/facturas.component';
 
 
 
@@ -45,6 +45,7 @@ const routes :Routes =[
   { path: 'login', component: LoginComponent},
   { path: 'facturas/:id', component: DetalleFacturaComponent},
   { path: 'facturas/form/:clienteId', component: FacturasComponent}
+
 ];
 
 @NgModule({
@@ -58,9 +59,11 @@ const routes :Routes =[
     PaginatorComponent,
     DetalleComponent,
     LoginComponent,
-    DetalleFacturaComponent
+    DetalleFacturaComponent,
+    FacturasComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     HttpClientModule,
     FormsModule,
