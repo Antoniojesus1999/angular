@@ -6,8 +6,7 @@ import { FacturaService } from './services/factura.service';
 
 @Component({
   selector: 'app-detalle-factura',
-  templateUrl: './detalle-factura.component.html',
-  styleUrls: ['./detalle-factura.component.css']
+  templateUrl: './detalle-factura.component.html'
 })
 export class DetalleFacturaComponent implements OnInit {
 
@@ -23,6 +22,7 @@ export class DetalleFacturaComponent implements OnInit {
       this.facturaService.getFactura(id).subscribe(factura => this.factura = factura);
     })
   }
+  
   
   
 }
