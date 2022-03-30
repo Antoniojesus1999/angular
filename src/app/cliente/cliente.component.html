@@ -13,12 +13,12 @@
     <table class="table table-bordered table-striped" *ngIf="clientes?.length>0">
       <thead>
         <tr>
-          <th>id</th>
+          <th *ngIf="authService.hasRole('ROLE_USER')">id</th>
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
           <th>Fecha</th>
-          <th>Crear Factura</th>
+          <th *ngIf="authService.hasRole('ROLE_ADMIN')">Crear Factura</th>
           <th>Region</th>
           <th *ngIf="authService.hasRole('ROLE_ADMIN')">Editar</th>
           <th *ngIf="authService.hasRole('ROLE_ADMIN')">Eliminar</th>
@@ -26,7 +26,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let cliente of clientes">
-          <td>
+          <td *ngIf="authService.hasRole('ROLE_USER')">
             <img (click)="abrirModal(cliente)" *ngIf="cliente?.foto " src="http://localhost:8080/api/uploads/img/{{cliente.foto}}" alt="Cliente con footo" class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
             <img (click)="abrirModal(cliente)" *ngIf="!cliente?.foto" src="http://localhost:8080/images/no-usuario.png" alt="Sin foto" class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
           </td>
@@ -34,7 +34,7 @@
           <td>{{ cliente.apellido | uppercase }}</td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.createAt | date:"EEEE dd, MMMM yyyy"}}</td>
-          <td><button  [routerLink]="['/facturas/form', cliente.id]" type="button" class="btn btn-success btn-sm">Crear Factura</button></td>
+          <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button  [routerLink]="['/facturas/form', cliente.id]" type="button" class="btn btn-success btn-sm">Crear Factura</button></td>
           <td>{{ cliente.region.nombre }}</td>
           <td *ngIf="authService.hasRole('ROLE_ADMIN')">
             <button  type="button" name="editar" [routerLink]="['/clientes/form', cliente.id]" class="btn btn-primary btn-sm">editar</button>

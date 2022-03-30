@@ -25,7 +25,9 @@ export class DetalleComponent implements OnInit {
     public authService: AuthService,
     public facturaService: FacturaService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.cliente);
+  }
 
   seleccionarFoto(event){
       this.fotoSeleccionada = event.target.files[0];
